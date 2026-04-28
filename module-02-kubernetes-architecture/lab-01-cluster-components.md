@@ -183,7 +183,7 @@ The controller manager detects the pod count dropped below desired (3) and creat
 
 ### 3.2 The reconciliation pattern
 
-```
+```text
 Desired State (stored in etcd)  ←──────────┐
         ↓                                   │
   Controller observes                       │
@@ -261,4 +261,4 @@ kubectl delete namespace lab-02
 
 ---
 
-## ➡️ Next: [Lab 02 — API Server, kubectl, and RBAC](lab-02-api-server-and-kubectl.md)
+## ➡️ Next: [Module 03 — Pods Deep Dive](../module-03-workloads/lab-01-pods-deep-dive.md)
