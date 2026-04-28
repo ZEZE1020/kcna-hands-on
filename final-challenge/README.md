@@ -5,6 +5,18 @@
 
 ---
 
+## Important Prerequisites
+
+Before starting, ensure your cluster has the following **required components**:
+
+1. **Ingress Controller** — An Ingress resource without a controller won't route traffic. Common options: NGINX Ingress Controller, Istio Ingress Gateway. Install one before attempting the Ingress requirement.
+
+2. **NetworkPolicy-capable CNI** — NetworkPolicy resources may apply cleanly but won't actually block traffic unless your CNI enforces them. Verify with `kubectl get networkpolicy` after creation; it should show your policies. CNIs like Calico, Cilium, or Weave support NetworkPolicy.
+
+3. **Metrics Server** — Required for `kubectl top` and HPA to work. Install it before the observability and autoscaling sections.
+
+---
+
 ## Scenario
 
 You've joined a team that needs to deploy **ShopCore** — a small e-commerce backend — to Kubernetes for the first time. You have the code and requirements. The rest is on you.
@@ -79,6 +91,7 @@ Complete all of the following. They're ordered loosely by module — but in this
   - Dev: 1 replica, resource limits half of prod
   - Prod: original specs
 - [ ] `helm install shopcore-prod ./shopcore -f values-prod.yaml -n shopcore` must work cleanly
+  - **Cleanup note:** If rerunning, delete the namespace and release first: `helm uninstall shopcore-prod -n shopcore && kubectl delete ns shopcore`
 
 ### 9. Observability
 - [ ] All pods must have the following labels: `app`, `version`, `tier`
@@ -86,7 +99,10 @@ Complete all of the following. They're ordered loosely by module — but in this
 - [ ] `kubectl top pods -n shopcore` must return real data (Metrics Server must be installed)
 - [ ] Write a single PromQL query that shows the request rate for the `api` service (add to a file `queries.promql`)
 
-### 10. GitOps (Bonus)
+### 10. GitOps (Bonus — Optional)
+
+The core challenge is complete after requirement #9. The following is an **optional stretch task**:
+
 - [ ] Create an ArgoCD `Application` manifest (YAML, not just CLI) that deploys the Helm chart
 - [ ] The Application should be configured for **automated sync with self-heal and prune**
 
