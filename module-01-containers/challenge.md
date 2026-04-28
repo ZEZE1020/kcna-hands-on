@@ -10,9 +10,10 @@
 You've been handed a Node.js API. Your job:
 
 1. Containerise it with a **production-grade** Dockerfile
-2. Keep the final image **under 100MB**
-3. The app must **not run as root**
-4. Pass a vulnerability scan with **zero HIGH or CRITICAL CVEs**
+2. Build and tag it as **`challenge-app:final`** — this exact tag is used for verification
+3. Keep the final image **under 100MB**
+4. The app must **not run as root**
+5. Pass a vulnerability scan with **zero HIGH or CRITICAL CVEs**
 
 ---
 
@@ -54,13 +55,15 @@ app.listen(3000, () => console.log('Listening on :3000'));
 
 ## Requirements
 
-| Requirement | Verification Command |
-|-------------|---------------------|
-| Image < 100MB | `docker images challenge-app:final` |
-| App responds on port 3000 | `curl localhost:3000` |
-| App responds on /health | `curl localhost:3000/health` |
-| Not running as root | `docker exec <id> whoami` → must NOT be `root` |
-| Zero HIGH/CRITICAL CVEs | `trivy image challenge-app:final --severity HIGH,CRITICAL` |
+| Requirement | Verification Command | Pass Criteria |
+|-------------|---------------------|-----|
+| Image < 100MB | `docker images challenge-app:final` | Size in `SIZE` column is less than 100MB |
+| App responds on port 3000 | `curl localhost:3000` | Returns JSON: `{"message":"KCNA Challenge App", ...}` |
+| App responds on /health | `curl localhost:3000/health` | Returns JSON: `{"status":"ok"}` |
+| Not running as root | `docker run -it challenge-app:final whoami` | Returns a non-root username (e.g., `node`, `app`) |
+| Zero HIGH/CRITICAL CVEs | `trivy image challenge-app:final --severity HIGH,CRITICAL` | Reports no HIGH or CRITICAL vulnerabilities |
+
+**Pass condition:** All five requirements above must pass to complete the core challenge.
 
 ---
 
@@ -82,6 +85,12 @@ Alpine has a built-in `node` user. After your setup steps:
 USER node
 ```
 Make sure your `WORKDIR` is writable by the node user — set ownership with `chown` in a `RUN` step.
+
+**Verification:** Start the built container and check the user:
+```bash
+docker run -it challenge-app:final whoami
+```
+It must print a non-root username like `node`, not `root`.
 
 </details>
 
@@ -117,7 +126,9 @@ CMD ["node", "server.js"]
 
 ---
 
-## Bonus Challenge
+## Bonus Challenge (Optional)
+
+The core challenge is complete once the five requirements above pass. The following are **optional stretch tasks**:
 
 1. Add a `.dockerignore` file — what belongs in it?
 2. Make the app print the container's hostname in the response (use `os.hostname()`)
