@@ -1,8 +1,7 @@
 # Module 03 · Lab 02 — Deployments, Rollouts, and Self-Healing
 
 > **KCNA Domain:** Kubernetes Fundamentals (46%)  
-> **Time:** ~60 minutes  
-> **Namespace:** `kubectl create namespace module-03`
+> **Time:** ~60 minutes
 
 ---
 
@@ -17,7 +16,8 @@ A deployment pipeline that demonstrates Kubernetes' self-healing, rolling update
 ### 1.1 Create a Deployment
 
 ```bash
-kubectl create namespace module-03
+# Create the namespace (if it already exists from Lab 01, that's fine)
+kubectl create namespace module-03 2>/dev/null || echo "Namespace already exists"
 
 cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
@@ -25,8 +25,6 @@ kind: Deployment
 metadata:
   name: webapp
   namespace: module-03
-  annotations:
-    deployment.kubernetes.io/revision: "1"
 spec:
   replicas: 4
   selector:
@@ -131,7 +129,7 @@ kubectl get pods -n module-03
 # You'll see new pods in ErrImagePull or ImagePullBackOff
 ```
 
-The readinessProbe saves you — the broken pods never become ready, so the rolling update stalls. The old pods are still running (maxUnavailable=1 means at least 3 out of 4 are still serving traffic).
+**What happened:** The image `nginx:DOES-NOT-EXIST` doesn't exist, so the kubelet can't even start the container — hence `ErrImagePull` or `ImagePullBackOff`. This is an image-pull failure, not a readiness probe failure. The rolling update stalls because the new pods never become ready. Meanwhile, the old pods keep serving traffic (maxUnavailable=1 means at least 3 out of 4 old replicas stay running).
 
 ### 3.2 Rollback
 
@@ -179,7 +177,7 @@ kubectl logs -l job-name=db-migration -n module-03
 ### 4.2 A parallel Job
 
 ```bash
-cat <<EOF | kubectl apply -f -
+cat <<'EOF' | kubectl apply -f -
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -201,6 +199,8 @@ EOF
 kubectl get pods -n module-03 -w
 kubectl get job parallel-work -n module-03
 ```
+
+> **Note:** The heredoc is quoted with `<<'EOF'` so that `$JOB_COMPLETION_INDEX` is passed to the container, not expanded locally.
 
 ### 4.3 CronJob
 
@@ -239,7 +239,7 @@ kubectl get jobs -n module-03
 A DaemonSet ensures one pod per node. Used for log collectors, monitoring agents, network plugins.
 
 ```bash
-cat <<EOF | kubectl apply -f -
+cat <<'EOF' | kubectl apply -f -
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -264,6 +264,9 @@ spec:
             cpu: "50m"
 EOF
 
+> **Note:** The heredoc is quoted with `<<'EOF'` so that `$(hostname)` and `$(date)` run inside the container, not on your local machine.
+
+```bash
 kubectl get daemonset -n module-03
 kubectl get pods -n module-03 -l app=node-logger -o wide
 # One pod per worker node
@@ -281,7 +284,25 @@ Scale your cluster and watch:
 
 StatefulSets give pods **stable identities** — predictable names (`app-0`, `app-1`, `app-2`) and persistent storage per pod. Used for databases, message queues.
 
+> **Note:** StatefulSets require a **Headless Service** (with `clusterIP: None`) before they can schedule pods. The service name is referenced in the `serviceName` field. For this overview example, we'll apply both together, but in practice, ensure the service exists first.
+
 ```bash
+# First create the headless service
+cat <<EOF | kubectl apply -f -
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+  namespace: module-03
+spec:
+  clusterIP: None   # Headless service
+  selector:
+    app: db
+  ports:
+  - port: 80
+EOF
+
+# Now create the StatefulSet
 cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: StatefulSet
