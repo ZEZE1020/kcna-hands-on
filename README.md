@@ -34,12 +34,12 @@ Each module follows a pattern:
 - A Linux/macOS machine or cloud VM (2 CPU, 4GB RAM minimum)
 - Docker installed
 - `kubectl` installed
-- `minikube` or `kind` installed (labs specify which)
+- `minikube` or `kind` installed (see [setup/environment.md](setup/environment.md))
 - Basic comfort with the terminal
 
 > **Quick environment check:**
 > ```bash
-> docker version && kubectl version --client && minikube version
+> docker version && kubectl version --client && kind version
 > ```
 
 ---
@@ -47,7 +47,7 @@ Each module follows a pattern:
 ## Repository Structure
 
 ```
-kcna-labs/
+kcna-hands-on/
 ├── README.md                        ← You are here
 ├── setup/
 │   └── environment.md               ← Full environment setup guide
@@ -58,45 +58,30 @@ kcna-labs/
 │   └── challenge.md
 │
 ├── module-02-kubernetes-architecture/  ← Control plane & node internals
-│   ├── lab-01-cluster-components.md
-│   ├── lab-02-api-server-and-kubectl.md
-│   └── challenge.md
+│   └── lab-01-cluster-components.md
 │
 ├── module-03-workloads/             ← Pods, Deployments, Jobs, DaemonSets
 │   ├── lab-01-pods-deep-dive.md
 │   ├── lab-02-deployments-and-rollouts.md
-│   ├── lab-03-jobs-and-cronjobs.md
-│   ├── lab-04-daemonsets-and-statefulsets.md
 │   └── challenge.md
 │
 ├── module-04-networking-and-services/  ← Services, DNS, Ingress, NetworkPolicy
-│   ├── lab-01-services-clusterip-nodeport.md
-│   ├── lab-02-dns-and-service-discovery.md
-│   ├── lab-03-ingress.md
-│   ├── lab-04-network-policy.md
-│   └── challenge.md
+│   └── lab-01-services-dns-networkpolicy.md
 │
 ├── module-05-cloud-native-architecture/  ← Microservices, service mesh, CRDs
-│   ├── lab-01-microservices-decomposition.md
-│   ├── lab-02-service-mesh-linkerd.md
-│   ├── lab-03-crds-and-operators.md
-│   └── challenge.md
+│   └── lab-01-architecture.md
 │
 ├── module-06-observability/         ← Logs, metrics, tracing
-│   ├── lab-01-structured-logging.md
-│   ├── lab-02-prometheus-and-grafana.md
-│   ├── lab-03-distributed-tracing-jaeger.md
-│   └── challenge.md
+│   └── lab-01-logging-metrics-tracing.md
 │
 ├── module-07-application-delivery/  ← Helm, GitOps, ArgoCD
-│   ├── lab-01-helm-basics.md
-│   ├── lab-02-helm-advanced.md
-│   ├── lab-03-gitops-argocd.md
-│   └── challenge.md
+│   └── lab-01-helm-and-gitops.md
 │
 └── final-challenge/
     └── README.md                    ← Capstone: deploy a full cloud-native app
 ```
+
+> **Note:** This is a partial curriculum with core labs. Additional modules and advanced topics may be added in future updates.
 
 ---
 
@@ -126,25 +111,26 @@ See [`setup/environment.md`](setup/environment.md) for:
 
 Use this checklist as you work through the labs:
 
-- [ ] Module 01 – Containers
-- [ ] Module 02 – Kubernetes Architecture
-- [ ] Module 03 – Workloads
-- [ ] Module 04 – Networking & Services
-- [ ] Module 05 – Cloud Native Architecture
-- [ ] Module 06 – Observability
-- [ ] Module 07 – Application Delivery
+- [ ] Module 01 – Containers (3 labs + challenge)
+- [ ] Module 02 – Kubernetes Architecture (1 lab)
+- [ ] Module 03 – Workloads (2 labs + challenge)
+- [ ] Module 04 – Networking & Services (1 lab)
+- [ ] Module 05 – Cloud Native Architecture (1 lab)
+- [ ] Module 06 – Observability (1 lab)
+- [ ] Module 07 – Application Delivery (1 lab)
 - [ ] Final Challenge
 
 ---
 
-## KCNA Exam Tips (from the labs themselves)
+## KCNA Exam Tips
 
-> These aren't tips to memorise — they're things you'll *understand* after completing the labs.
+> **Disclaimer:** These insights emerge from the labs themselves. Always cross-reference with the current [CNCF KCNA exam guide](https://training.linuxfoundation.org/certification/kubernetes-cloud-native-associate/) for the latest exam details.
 
-- The KCNA is 90 minutes, 60 questions — it tests breadth across the CNCF landscape
+- The KCNA tests breadth across the CNCF landscape, not deep Kubernetes API knowledge
 - You do NOT need to write code in the exam — but hands-on practice builds the conceptual clarity that multiple-choice questions test
 - The exam expects you to know *what* tools in the CNCF ecosystem do, not just Kubernetes itself
 - After module 06, you'll understand why observability is its own domain — it's not an afterthought
+- Focus on understanding *why* patterns exist (e.g., 12-factor apps, declarative infrastructure) rather than memorising commands
 
 ---
 
