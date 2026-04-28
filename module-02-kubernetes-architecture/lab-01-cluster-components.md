@@ -47,9 +47,9 @@ You'll see:
 
 Open two terminals.
 
-**Terminal 1** — watch API server audit logs:
+**Terminal 1** — watch pod creation events in the namespace:
 ```bash
-kubectl get pods -n kube-system -w
+kubectl get events -n lab-02 --sort-by='.lastTimestamp' -w
 ```
 
 **Terminal 2** — create something:
@@ -58,15 +58,17 @@ kubectl create namespace lab-02
 kubectl run nginx --image=nginx -n lab-02
 ```
 
-Watch Terminal 1 react in real time.
+Watch Terminal 1 react in real time — you'll see `Created` and `Scheduled` events as the API server processes your requests.
 
 ### 1.3 Understand etcd as the source of truth
 
 Everything in Kubernetes is stored in etcd as key-value pairs. The API server is the *only* component that talks to etcd directly.
 
 ```bash
-# Get into the etcd pod
-kubectl exec -it -n kube-system etcd-kcna-arch-control-plane -- sh
+# Get into the etcd pod (note: pod name includes the cluster name)
+# For the cluster created above, it's "etcd-kcna-arch-control-plane"
+ETCD_POD=$(kubectl get pods -n kube-system -l component=etcd -o jsonpath='{.items[0].metadata.name}')
+kubectl exec -it -n kube-system $ETCD_POD -- sh
 
 # Inside the etcd pod — list all keys (use etcdctl)
 ETCDCTL_API=3 etcdctl \
@@ -136,10 +138,8 @@ kubectl describe pod needs-special-gpu -n lab-02 | grep -A5 Events
 
 You'll see: `0/3 nodes are available: 1 node has unacceptable pod spec, 2 didn't match node selector`
 
-Fix it:
+Fix it by deleting and recreating with the correct label (you can't patch a running pod's spec):
 ```bash
-kubectl patch pod needs-special-gpu -n lab-02 -p '{"spec":{"nodeSelector":{"gpu":"true"}}}'
-# Note: you can't patch a running pod's spec — delete and recreate
 kubectl delete pod needs-special-gpu -n lab-02
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -207,14 +207,13 @@ The kubelet runs on every node. It's responsible for:
 - Running pod liveness/readiness probes
 
 ```bash
-# SSH into a worker node (kind-specific)
-docker exec -it kcna-arch-worker bash
-
-# Inside the worker node
-systemctl status kubelet
-cat /var/lib/kubelet/config.yaml | head -20
-exit
+# On a kind cluster, the kubelet is managed by the container itself
+# View kubelet logs from the Kubernetes API perspective
+kubectl describe node kcna-arch-worker | grep -A10 "Conditions"
+kubectl describe node kcna-arch-worker | grep -A5 "Images"
 ```
+
+**Note:** `systemctl status kubelet` may not work inside kind node containers because kind uses a minimal OS without full systemd. The commands above verify kubelet health through the Kubernetes API instead.
 
 ### 4.2 kube-proxy
 
@@ -235,7 +234,7 @@ Every `kubectl` command is an API call. You can see this:
 kubectl get pods -n lab-02 -v=8 2>&1 | grep -E "GET|POST|PATCH" | head -10
 ```
 
-The `-v=8` flag shows the raw HTTP calls kubectl is making. Everything goes through `https://<apiserver>/api/v1/...`
+The `-v=8` flag shows the raw HTTP calls kubectl is making. Output is verbose (many HTTP calls), so `grep` helps filter to the interesting parts. Everything goes through `https://<apiserver>/api/v1/...`
 
 ---
 
