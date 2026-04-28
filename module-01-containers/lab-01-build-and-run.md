@@ -30,9 +30,10 @@ class Handler(BaseHTTPRequestHandler):
         name = os.environ.get("APP_NAME", "KCNA Lab")
         self.send_response(200)
         self.end_headers()
-        self.wfile.write(f"Hello from {name}!\n".encode())
+        self.wfile.write(f"Hello from {name}!\n".encode('utf-8'))
 
-HTTPServer(("", 8080), Handler).serve_forever()
+HTTPServer(( "localhost", 8080), Handler).serve_forever()
+
 ```
 
 ### 1.2 Write the Dockerfile
