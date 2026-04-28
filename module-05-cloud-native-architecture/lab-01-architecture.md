@@ -333,6 +333,25 @@ The KCNA exam tests broad awareness of tools. Know the *category* each tool fall
 
 ---
 
+## Part 6 — Day 2 Challenge: Chaos and Mesh
+
+
+> **Task:** Let us see Linkerd in action under stress.
+
+> 1. Launch a temporary pod to generate continuous traffic to the `web-svc` in the `emojivoto` namespace (e.g. using a busybox `while true; do wget...; done` loop).
+
+> 2. Open the Linkerd dashboard or use the `linkerd viz stat` CLI to securely observe real-time metrics.
+
+> 3. Monitor the live Success Rate (SR) and Latency (p50, p95, p99) of your services as the traffic blasts through the sidecar proxies.
+
+
+## Part 6 — Day 2 Challenge: Chaos and Mesh
+
+> **Task:** Let us see Linkerd in action under stress.
+> 1. Launch a temporary pod to generate continuous traffic to the `web-svc` in the `emojivoto` namespace (e.g. using a busybox `while true; do wget...; done` loop).
+> 2. Open the Linkerd dashboard or use the `linkerd viz stat` CLI to securely observe real-time metrics.
+> 3. Monitor the live Success Rate (SR) and Latency (p50, p95, p99) of your services as the traffic blasts through the sidecar proxies.
+
 ## Cleanup
 
 ```bash

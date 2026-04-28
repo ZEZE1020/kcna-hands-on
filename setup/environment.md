@@ -70,6 +70,15 @@ kubectl get nodes
 
 ---
 
+> **🚨 Real-World Engineering Tip: The CNCF Landscape Moves Fast**
+
+> Cloud-native tools release notoriously fast. If an installation command (like a `kubectl apply -f https://.../v1.x/install.yaml`) fails or times out in the future, don’t panic! That is a core engineering lesson.
+
+> 1. Check the official docs or the **Artifact Hub** for the updated chart or manifest link.
+
+> 2. Ensure your Kubernetes cluster version is compatible with the latest tool version.
+
+
 ## Required Tools
 
 Install these before starting:

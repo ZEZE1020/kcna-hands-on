@@ -272,6 +272,28 @@ kubectl run dns-test --image=busybox --rm -it -n module-04 -- nslookup headless-
 
 ---
 
+## Part 7 — Day 2 Challenge: The Zero-Trust Drill
+
+
+> **Task:** Use `kubectl create` or Kubernetes docs directly!
+
+> Your pods are currently exposed. Try this from memory or official docs:
+
+> 1. Create a `NetworkPolicy` in your namespace that **drops all ingress traffic** by default (Default Deny).
+
+> 2. Create a second `NetworkPolicy` that **only** allows pods with the label `app=frontend` to communicate with the `backend` on its exposed port.
+
+> 3. Create a temporary `alpine` pod lacking the `frontend` label and prove the traffic is blocked.
+
+
+## Part 7 — Day 2 Challenge: The Zero-Trust Drill
+
+> **Task:** Use `kubectl create` or Kubernetes docs directly!
+> Your pods are currently exposed. Try this from memory or official docs:
+> 1. Create a `NetworkPolicy` in your namespace that **drops all ingress traffic** by default (Default Deny).
+> 2. Create a second `NetworkPolicy` that **only** allows pods with the label `app=frontend` to communicate with the `backend` on its exposed port.
+> 3. Create a temporary `alpine` pod lacking the `frontend` label and prove the traffic is blocked.
+
 ## Cleanup
 
 ```bash

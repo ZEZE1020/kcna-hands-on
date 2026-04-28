@@ -350,6 +350,28 @@ kubectl kustomize ~/kcna-labs/module-07/kustomize/overlays/prod
 
 ---
 
+## Part 7 — Day 2 Challenge: The GitOps Drift
+
+
+> **Task:** ArgoCD expects the live cluster state to exactly match the Git state. Let us violate that assumption.
+
+> 1. In your terminal, use `kubectl scale deployment <your-argocd-deployed-app> --replicas=5`.
+
+> 2. Go back to the **ArgoCD web UI** and observe the application state. It should instantly complain about being `OutOfSync` because the cluster state (5) diverges from the Git repo truth.
+
+> 3. Click "Sync" in ArgoCD (or sit back and wait if auto-sync is enabled).
+
+> 4. Run `kubectl get pods -w` in your terminal and watch the GitOps engine aggressively terminate the drift pods to enforce the Git truth.
+
+
+## Part 7 — Day 2 Challenge: The GitOps Drift
+
+> **Task:** ArgoCD expects the live cluster state to exactly match the Git state. Let us violate that assumption.
+> 1. In your terminal, use `kubectl scale deployment <your-argocd-deployed-app> --replicas=5`.
+> 2. Go back to the **ArgoCD web UI** and observe the application state. It should instantly complain about being `OutOfSync` because the cluster state (5) diverges from the Git repo truth.
+> 3. Click "Sync" in ArgoCD (or sit back and wait if auto-sync is enabled).
+> 4. Run `kubectl get pods -w` in your terminal and watch the GitOps engine aggressively terminate the drift pods to enforce the Git truth.
+
 ## Cleanup
 
 ```bash

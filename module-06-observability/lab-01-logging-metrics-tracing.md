@@ -381,6 +381,25 @@ EOF
 
 ---
 
+## Part 6 — Day 2 Challenge: Query the Chaos
+
+
+> **Task:** SREs do not just stare at dashboards; they query them during an outage.
+
+> 1. Spin up a temporary pod hitting your monitored application repeatedly to simulate traffic load.
+
+> 2. Head to the **Prometheus UI** and write a PromQL query that calculates the **99th percentile latency** (`p99`) of your requests over a 5-minute window.
+
+> 3. Switch to your logging interface. Write a query to find any logs from your app emitting the word `"error"` or `"fail"` (e.g. string matching `{app="frontend"} |= "error"`).
+
+
+## Part 6 — Day 2 Challenge: Query the Chaos
+
+> **Task:** SREs do not just stare at dashboards; they query them during an outage.
+> 1. Spin up a temporary pod hitting your monitored application repeatedly to simulate traffic load.
+> 2. Head to the **Prometheus UI** and write a PromQL query that calculates the **99th percentile latency** (`p99`) of your requests over a 5-minute window.
+> 3. Switch to your logging interface. Write a query to find any logs from your app emitting the word `"error"` or `"fail"` (e.g. string matching `{app="frontend"} |= "error"`).
+
 ## Cleanup
 
 ```bash
