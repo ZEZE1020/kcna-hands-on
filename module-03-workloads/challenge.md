@@ -12,6 +12,8 @@ You've been paged at 2am. The `payments` service is down. Your job is to diagnos
 
 ## Setup (Deploy the Broken Environment)
 
+> **Important:** If you've run this challenge before, delete the existing namespace first: `kubectl delete namespace module-03-challenge`
+
 ```bash
 kubectl create namespace module-03-challenge
 
@@ -80,13 +82,37 @@ EOF
 
 ---
 
-## Verification
+## Pass Criteria (Explicit)
 
-```bash
-kubectl get pods -n module-03-challenge   # All Running
-kubectl get cronjob -n module-03-challenge  # ACTIVE
-kubectl get secret -n module-03-challenge   # Secret exists
-```
+Your fixes are complete when ALL of the following are true:
+
+1. **All payment pods are Ready:**
+   ```bash
+   kubectl get pods -n module-03-challenge -l app=payments
+   ```
+   Should show: 3 pods with `Status: Running` and `Ready: 1/1`
+
+2. **CronJob is accepted by the API:**
+   ```bash
+   kubectl get cronjob payment-reconciler -n module-03-challenge
+   ```
+   Should show: Status `Active` (or blank if not yet triggered)
+
+3. **A Secret exists for the password:**
+   ```bash
+   kubectl get secret -n module-03-challenge
+   ```
+   Should show a secret (e.g., `db-secret`)
+
+4. **DB_PASSWORD is wired from the Secret (not hardcoded):**
+   ```bash
+   kubectl get deployment payments -n module-03-challenge -o yaml | grep -A5 "env:"
+   ```
+   Should show `valueFrom.secretKeyRef`, not a literal `value:`
+
+---
+
+## Verification
 
 ---
 
@@ -99,12 +125,14 @@ kubectl get secret -n module-03-challenge   # Secret exists
 
 <details>
 <summary>Bug 2</summary>
-900Gi of RAM doesn't exist on any node. Use `memory: "64Mi"`.
+900Gi of RAM doesn't exist on any node. Use `memory: "64Mi"` — a much smaller request that fits within node allocatable memory.
 </details>
 
 <details>
 <summary>Bug 3</summary>
-nginx listens on port 80. Change readinessProbe port to `80` and path to `/` (there's no `/health` route in default nginx).
+nginx listens on port 80 and serves `/` by default (no `/health` route exists). Change the readinessProbe to:
+- `port: 80` (not 9999)
+- `path: "/"` (not `/health`)
 </details>
 
 <details>
