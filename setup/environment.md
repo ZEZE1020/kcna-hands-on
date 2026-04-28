@@ -42,6 +42,8 @@ kcna-labs-worker          Ready    <none>          1m
 kcna-labs-worker2         Ready    <none>          1m
 ```
 
+> **Note:** The output shows the control-plane node plus the two worker nodes. All three should be Ready before proceeding to the labs.
+
 ### Teardown
 ```bash
 kind delete cluster --name kcna-labs
@@ -66,7 +68,7 @@ kubectl get nodes
 | Play with Kubernetes | https://labs.play-with-k8s.com | 4-hour sessions, multi-node |
 | KodeKloud Playground | https://kodekloud.com/playgrounds | Good for longer sessions |
 
-> All labs in this guide work on any of the above. Killercoda is the fastest to get started.
+> **Note:** Most labs in this guide work on any of the above, with minor adjustments. Some modules (especially observability and service mesh) depend on specific cluster features or internet access, so check the individual lab prerequisites.
 
 ---
 
@@ -108,15 +110,17 @@ kind version
 
 ## Resource Requirements Per Module
 
+These are **practical minimums** for running each module. Some modules exceed these values once additional components (observability stack, service mesh, ArgoCD) are enabled.
+
 | Module | Min RAM | Notes |
 |--------|---------|-------|
 | 01 – Containers | 1GB | Docker only, no cluster needed |
 | 02 – Architecture | 2GB | Single-node kind cluster |
 | 03 – Workloads | 2GB | Single-node kind cluster |
 | 04 – Networking | 2GB | Multi-node kind cluster |
-| 05 – Cloud Native Arch | 3GB | Linkerd service mesh |
-| 06 – Observability | 4GB | Prometheus + Grafana + Jaeger |
-| 07 – App Delivery | 2GB | Helm + ArgoCD |
+| 05 – Cloud Native Arch | 3GB+ | Linkerd service mesh (optional but recommended) |
+| 06 – Observability | 4GB+ | Prometheus + Grafana + Jaeger stack |
+| 07 – App Delivery | 2GB+ | Helm + ArgoCD |
 
 ---
 
