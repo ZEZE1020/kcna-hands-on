@@ -35,7 +35,7 @@ kubectl get nodes
 ```
 
 Expected output:
-```
+```text
 NAME                      STATUS   ROLES           AGE
 kcna-labs-control-plane   Ready    control-plane   1m
 kcna-labs-worker          Ready    <none>          1m

@@ -1,6 +1,6 @@
 # Module 01 · Challenge — Containerise a Real-World App
 
-> **No step-by-step guide from here.** Use what you learned in Labs 01 and 02.  
+> **KCNA Domain:** Container Orchestration (22%)\n> **No step-by-step guide from here.** Use what you learned in Labs 01 and 02.  
 > Hints are available but try without them first.
 
 ---
