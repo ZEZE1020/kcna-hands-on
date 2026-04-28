@@ -259,7 +259,7 @@ Open http://localhost:16686 — this is the Jaeger UI.
 - **TraceID** — a UUID that links all spans in one request
 - **OpenTelemetry (OTel)** — the CNCF standard for instrumentation; vendor-neutral
 
-```
+```text
 Request: User → Frontend → API → Database
 
 Trace ID: abc-123
@@ -389,4 +389,4 @@ helm uninstall monitoring -n monitoring
 kubectl delete namespace monitoring
 ```
 
-## ➡️ Next: [Module 07 — Application Delivery: Helm and GitOps](../module-07-application-delivery/lab-01-helm-basics.md)
+## ➡️ Next: [Module 07 — Application Delivery: Helm and GitOps](../module-07-application-delivery/lab-01-helm-and-gitops.md)
