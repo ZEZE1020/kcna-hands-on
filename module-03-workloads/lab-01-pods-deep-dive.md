@@ -3,6 +3,8 @@
 > **KCNA Domain:** Kubernetes Fundamentals (46%)  
 > **Time:** ~50 minutes
 
+> **Note:** This lab creates resources in the `module-03` namespace. If you're rerunning the entire lab, delete the namespace first: `kubectl delete namespace module-03`
+
 ---
 
 ## Part 1 — Pod Anatomy
@@ -60,10 +62,17 @@ kubectl wait --for=condition=Ready pod/multi-container -n module-03 --timeout=60
 
 ```bash
 # Content written by content-updater is served by nginx
+# Run this in a separate terminal or in the background with &
 kubectl port-forward pod/multi-container 8080:80 -n module-03 &
+
+# Give the content-updater a moment to write the first update
+sleep 2
+
 curl localhost:8080
 # See "Updated at <time>" — content-updater wrote it, nginx serves it
 ```
+
+If you backgrounded the port-forward with `&`, bring it back to the foreground with `fg` when done, then press Ctrl+C to stop it.
 
 ### 1.3 Explore init containers
 
@@ -244,8 +253,8 @@ kubectl get secret db-secret -n module-03 -o jsonpath='{.data.DB_PASSWORD}' | ba
 ### 4.1 Node Selector
 
 ```bash
-# Label a node
-kubectl label node kcna-arch-worker region=eu-west
+# Label a node (use --overwrite to safely rerun if label already exists)
+kubectl label node kcna-arch-worker region=eu-west --overwrite
 
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
@@ -269,11 +278,12 @@ kubectl get pod eu-pod -n module-03 -o wide
 
 ```bash
 # Taint a node — no pods will schedule here unless they tolerate it
-kubectl taint node kcna-arch-worker2 special=true:NoSchedule
+# Use --overwrite to safely rerun if taint already exists
+kubectl taint node kcna-arch-worker2 special=true:NoSchedule --overwrite=true
 
 # This pod has NO toleration — will NOT schedule on worker2
 kubectl run no-toleration --image=nginx -n module-03
-kubectl get pod no-toleration -n module-03 -o wide   # On worker1
+kubectl get pod no-toleration -n module-03 -o wide   # Scheduled on an available worker
 
 # This pod tolerates the taint — CAN schedule on worker2
 cat <<EOF | kubectl apply -f -
@@ -291,6 +301,12 @@ spec:
   containers:
   - name: app
     image: nginx
+EOF
+
+kubectl get pod with-toleration -n module-03 -o wide   # May be on worker2, depending on cluster state
+```
+
+**Note:** Pod placement depends on the current cluster state and available resources. The `with-toleration` pod might schedule on worker1 or worker2 — the taint only allows it; it doesn't force it.
 EOF
 
 # Remove the taint when done
