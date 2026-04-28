@@ -1,6 +1,6 @@
 # Final Challenge — Deploy a Production-Grade Cloud-Native App
 
-> **Estimated Time:** 3–4 hours  
+> **Time:** 3–4 hours  
 > **This challenge has no walkthrough.** Use everything from modules 01–07.
 
 ---
