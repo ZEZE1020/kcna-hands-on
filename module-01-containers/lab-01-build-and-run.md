@@ -58,6 +58,8 @@ curl localhost:8080
 
 Expected: `Hello from KCNA Lab!`
 
+> **Note:** The app binds to `0.0.0.0:8080` (not `localhost`), which makes it reachable through Docker port mapping. If the app used `localhost` (127.0.0.1), the container would not be reachable from the host.
+
 ---
 
 ## Part 2 — Understanding Layers
@@ -102,6 +104,8 @@ docker build -t kcna-app:v2 .   # second build — watch "CACHED"
 
 ### 3.1 Pass an environment variable
 
+> **Tip:** If you're rerunning this lab, remove the existing `my-app-2` container first: `docker rm my-app-2` (stop it if running: `docker stop my-app-2`). Container names must be unique.
+
 ```bash
 docker run -d -p 8081:8080 -e APP_NAME="Module 01" --name my-app-2 kcna-app:v1
 curl localhost:8081
@@ -133,7 +137,7 @@ docker run -d --name beta kcna-app:v1
 # What IP does alpha have?
 docker inspect alpha | grep IPAddress
 
-# Can alpha reach beta?
+# Can alpha reach beta? (Note: ping may not be available in slim images)
 docker exec alpha ping -c3 <beta-ip>
 ```
 
@@ -141,16 +145,20 @@ Try to curl `beta` from your host — you can't unless you published the port.
 
 ### 4.2 Process isolation
 
+> **Environment note:** The `ps` command may not be available in minimal images like `python:3.12-slim`. The following checks the isolation concept; adapt based on your image.
+
 ```bash
-docker exec alpha ps aux     # only sees its own processes
-ps aux | grep python         # host sees them too — they're just Linux processes
+docker exec alpha ps aux 2>/dev/null || echo "(ps not available in this image)"
+ps aux | grep python         # host sees them — they're just Linux processes
 ```
 
 **Concept check:** Containers are NOT VMs. They're isolated Linux processes using namespaces and cgroups. The host kernel is shared.
 
 ---
 
-## Part 5 — Push to a Registry
+## Part 5 — Push to a Registry (Optional)
+
+This section is **optional**. It requires a Docker Hub account or a local registry, but the core lab works without it.
 
 ### 5.1 Tag and push (optional, needs Docker Hub account)
 
