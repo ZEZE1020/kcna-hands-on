@@ -66,7 +66,7 @@ kubectl get pods -n kube-system | grep coredns
 ```
 
 CoreDNS is the cluster DNS. Every Service gets a DNS record:
-```
+```text
 <service-name>.<namespace>.svc.cluster.local
 ```
 
@@ -278,4 +278,4 @@ kubectl run dns-test --image=busybox --rm -it -n module-04 -- nslookup headless-
 kubectl delete namespace module-04 frontend backend-ns monitoring
 ```
 
-## ➡️ Next: [Module 04 Challenge](challenge.md)
+## ➡️ Next: [Module 05 — Cloud Native Architecture](../module-05-cloud-native-architecture/lab-01-architecture.md)
