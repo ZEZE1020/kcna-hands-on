@@ -118,6 +118,8 @@ With mesh:       Frontend [proxy] → [proxy] Backend
 
 ### 2.2 Install Linkerd
 
+> **Prerequisites:** This section requires **working internet access and DNS** to pull CLI binaries and container images. It also requires that your cluster passes `linkerd check --pre`. If these are not available, skip to Part 3 (CRDs).
+
 ```bash
 # Install Linkerd CLI
 curl --proto '=https' --tlsv1.2 -sSfL https://run.linkerd.io/install | sh
@@ -222,6 +224,9 @@ spec:
 EOF
 
 kubectl get crd databaseclusters.kcna.labs
+
+# Wait for the CRD to be Established before creating instances
+kubectl wait --for=condition=Established crd/databaseclusters.kcna.labs --timeout=10s
 ```
 
 ### 3.2 Create instances of your custom resource
@@ -279,9 +284,11 @@ Real-world examples from CNCF ecosystem:
 
 ## Part 4 — Serverless on Kubernetes
 
-### 4.1 Knative (awareness)
+### 4.1 Knative (Awareness Only)
 
-The KCNA tests awareness of serverless platforms in the CNCF ecosystem.
+This section covers **KCNA awareness** of serverless. Installing a fully functional Knative Serving cluster requires additional components (eventing, ingress controller, etc.) beyond CRDs.
+
+The KCNA tests awareness of serverless platforms in the CNCF ecosystem:
 
 ```bash
 # Knative Serving allows:
@@ -289,7 +296,7 @@ The KCNA tests awareness of serverless platforms in the CNCF ecosystem.
 # - Automatic scaling based on concurrent requests
 # - Traffic splitting for canary deployments
 
-# Install Knative CRDs (installs even without the serving backend)
+# Install Knative CRDs (note: CRDs alone don't enable serverless serving)
 kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.13.0/serving-crds.yaml
 kubectl get crd | grep knative
 ```
@@ -333,21 +340,11 @@ The KCNA exam tests broad awareness of tools. Know the *category* each tool fall
 
 ---
 
-## Part 6 — Day 2 Challenge: Chaos and Mesh
+## Part 6 — Day 2 Challenge: Chaos and Mesh (Optional Stretch)
 
+This section is **optional** for deeper exploration after completing the core lab.
 
-> **Task:** Let us see Linkerd in action under stress.
-
-> 1. Launch a temporary pod to generate continuous traffic to the `web-svc` in the `emojivoto` namespace (e.g. using a busybox `while true; do wget...; done` loop).
-
-> 2. Open the Linkerd dashboard or use the `linkerd viz stat` CLI to securely observe real-time metrics.
-
-> 3. Monitor the live Success Rate (SR) and Latency (p50, p95, p99) of your services as the traffic blasts through the sidecar proxies.
-
-
-## Part 6 — Day 2 Challenge: Chaos and Mesh
-
-> **Task:** Let us see Linkerd in action under stress.
+> **Task:** See Linkerd in action under stress.
 > 1. Launch a temporary pod to generate continuous traffic to the `web-svc` in the `emojivoto` namespace (e.g. using a busybox `while true; do wget...; done` loop).
 > 2. Open the Linkerd dashboard or use the `linkerd viz stat` CLI to securely observe real-time metrics.
 > 3. Monitor the live Success Rate (SR) and Latency (p50, p95, p99) of your services as the traffic blasts through the sidecar proxies.
