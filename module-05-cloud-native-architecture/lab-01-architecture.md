@@ -110,7 +110,7 @@ Without a service mesh:
 
 A service mesh (Linkerd, Istio, Consul) handles these at the **infrastructure layer** via sidecar proxies.
 
-```
+```text
 Without mesh:    Frontend → Backend
 With mesh:       Frontend [proxy] → [proxy] Backend
                                 ↑ transparent, automatic
@@ -259,7 +259,7 @@ Nothing happens yet — there's no controller watching these resources. That's w
 
 An operator = CRD + a controller that acts on instances of that CRD.
 
-```
+```text
 User creates DatabaseCluster CR (spec: postgres, 3 replicas)
          ↓
 Operator's controller detects new DatabaseCluster
