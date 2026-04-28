@@ -1,6 +1,6 @@
 # Module 03 · Challenge — Fix a Broken Deployment
 
-> **No walkthroughs.** Debug and fix a production incident using your workload knowledge.
+> **KCNA Domain:** Kubernetes Fundamentals (46%)\n> **No walkthroughs.** Debug and fix a production incident using your workload knowledge.
 
 ---
 
@@ -117,3 +117,7 @@ Then reference it with `secretKeyRef`.
 <summary>Bug 5</summary>
 `restartPolicy: Always` is not valid for Job pods. Use `restartPolicy: OnFailure` or `Never`.
 </details>
+
+---
+
+## ➡️ Next Module: [Module 04 — Services, DNS, and Network Policy](../module-04-networking-and-services/lab-01-services-dns-networkpolicy.md)
