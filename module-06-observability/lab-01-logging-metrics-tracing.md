@@ -2,7 +2,7 @@
 
 > **KCNA Domain:** Cloud Native Observability (8%)  
 > **Time:** ~90 minutes  
-> **Tools:** Prometheus, Grafana, Loki, Jaeger
+> **Tools:** Prometheus, Grafana, Jaeger (Loki not included in this setup; logs are from Kubernetes stdout)
 
 ---
 
@@ -137,10 +137,11 @@ kubectl logs app-with-log-sidecar -c log-shipper -n module-06 -f
 ### 2.1 Access Prometheus
 
 ```bash
+# Keep this terminal open, or run in a separate terminal
 kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus 9090:9090 &
 ```
 
-Open http://localhost:9090 in your browser.
+Open http://localhost:9090 in your browser. (If you backgrounded the port-forward, the URL will stay active as long as the terminal is open.)
 
 ### 2.2 Query the data with PromQL
 
@@ -163,10 +164,12 @@ kube_deployment_status_replicas_available
 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100)
 ```
 
-### 2.3 Create a pod that generates custom metrics
+### 2.3 Custom Metrics Example (Understanding Scraping)
+
+This example demonstrates how Prometheus scrape annotations work. Note: Prometheus annotations alone don't guarantee scraping — the `kube-prometheus-stack` setup uses a `ServiceMonitor` CRD for automatic discovery.
 
 ```bash
-# Expose a /metrics endpoint that Prometheus can scrape
+# Example: a hypothetical metrics exporter pod
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -180,15 +183,19 @@ metadata:
 spec:
   containers:
   - name: app
-    image: prom/node-exporter   # This exposes real node metrics
+    # In a real scenario, this would be an app that exports metrics on /metrics
+    image: prom/simple-json-exporter  # Example; demonstrates scraping concept
     ports:
     - containerPort: 8080
 EOF
 ```
 
+**KCNA concept:** Even with annotations, Prometheus needs a scrape target to discover and pull metrics. In production, use `ServiceMonitor` or `PodMonitor` CRDs (part of the Prometheus Operator) for more reliable auto-discovery.
+
 ### 2.4 Access Grafana
 
 ```bash
+# Keep this terminal open, or run in a separate terminal
 kubectl port-forward -n monitoring svc/monitoring-grafana 3000:80 &
 # Login: admin / kcna-labs
 ```
@@ -381,19 +388,9 @@ EOF
 
 ---
 
-## Part 6 — Day 2 Challenge: Query the Chaos
+## Part 6 — Day 2 Challenge: Query During an Outage (Optional Stretch)
 
-
-> **Task:** SREs do not just stare at dashboards; they query them during an outage.
-
-> 1. Spin up a temporary pod hitting your monitored application repeatedly to simulate traffic load.
-
-> 2. Head to the **Prometheus UI** and write a PromQL query that calculates the **99th percentile latency** (`p99`) of your requests over a 5-minute window.
-
-> 3. Switch to your logging interface. Write a query to find any logs from your app emitting the word `"error"` or `"fail"` (e.g. string matching `{app="frontend"} |= "error"`).
-
-
-## Part 6 — Day 2 Challenge: Query the Chaos
+This section is **optional** for deeper practice after completing the core lab.
 
 > **Task:** SREs do not just stare at dashboards; they query them during an outage.
 > 1. Spin up a temporary pod hitting your monitored application repeatedly to simulate traffic load.
