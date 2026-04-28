@@ -190,7 +190,7 @@ GitOps is an operating model where:
 - A **reconciliation loop** (ArgoCD, Flux) continuously syncs cluster state with Git
 - All changes go through Git (PRs, not `kubectl apply`)
 
-```
+```text
 Developer pushes to Git
         ↓
 ArgoCD detects diff between Git and cluster
